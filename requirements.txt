@@ -1,9 +1,9 @@
 tensorflow>=2.16.0
-earthengine-api
-xee
-xarray
-dask
-distributed
+# earthengine-api
+# xee
+# xarray
+# dask
+# distributed
 patchify
 numpy
 pygeoj

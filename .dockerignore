@@ -1,2 +1,32 @@
-xeeServiceAccount_17_06_25.json
+# Version control
+.git
+.gitignore
+
+# Doc
+README.md
+
+# Test Area
+prediction_complete.py
+create_daily_raster_s2.py
+GRID-ALLCALSSES-COL9.geojson
+
+
+# Python
+__pycache__/
+*.pyc
+venv/
+
+
+# Logs
+*.log
 logs/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment
+.env
+.env.local

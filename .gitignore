@@ -71,7 +71,6 @@ SAG_Docker_build_test/docker_source_code/checkpoint/*
 
 
 
-model.py
 create_daily_raster_s2.py
 prediction_complete.py
 GRID-ALLCALSSES-COL9.geojson
