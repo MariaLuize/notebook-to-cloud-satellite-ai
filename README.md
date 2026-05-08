@@ -1,7 +1,7 @@
 # Workshop: From Notebook to Cloud
 ## Satellite Monitoring with Keras and Google Cloud (GDE Workshop)
 
-Tired of seeing your computer crash when processing heavy satellite images? In this practical workshop, we will transition your AI models from a local environment to Google Cloud. We focus on organizing data in Cloud Storage, packaging code with Docker for portability, and choosing the ideal hardware (NVIDIA L4 GPUs) using cost-effective Spot VMs.
+Tired of seeing your computer crash when processing heavy satellite images? In this practical workshop, we will transition your AI models from a local environment to Google Cloud. We focus on organizing data in Cloud Storage, packaging code with Docker for portability, and choosing the ideal hardware (NVIDIA L4 GPUs) using cost-effective VMs.
 
 ---
 
