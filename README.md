@@ -62,10 +62,11 @@ If you see the error: `Limit: 0.0 globally (metric: GPUS_ALL_REGIONS)`, it means
 ## 4. Deploying the Inference VM
 We will use a **G2-Standard-8** machine with a modern **NVIDIA L4 GPU**.
 
-### Check Availability
+### Check Machine Availability
 If a zone is full, check others using:
 ```bash
 gcloud compute accelerator-types list --filter="name=nvidia-l4" --format="table(zone.basename())"
+gcloud compute machine-types list --filter="name=g2-standard-8"
 ```
 
 ### Create the Instance
