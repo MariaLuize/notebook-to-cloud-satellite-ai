@@ -15,7 +15,7 @@ from packaging.version import parse as parse_version
 import os.path
 import keras
 
-from model import UNetModel
+# from model import UNetModel
 
 # Google Cloud
 import psutil
@@ -28,9 +28,6 @@ KERNEL_SIZE  = 256
 MOSAIC_SCALE = 10
 REGION_ID    = 1139
 DISTANCE     = 48034
-DROPOUT      = 0.3
-LOSS         = 'BinaryCrossentropy'
-METRICS      = ['RootMeanSquaredError']
 
 sys.stdout.flush()
 
@@ -63,11 +60,9 @@ def gpus_initialise():
         except RuntimeError as e:
             print(e)
 
-def _load_model(optical_bands, optical_indices, dropout, loss, metrics, epoch):
-    model_keras = f'{ROOT_PATH}/cp-000{epoch}.keras'  
-    model_instance = UNetModel(input_shape=[None, None, len(optical_bands + optical_indices)], dropout_rate=dropout, loss=loss, metrics_list=metrics)
-    model          = model_instance.get_model()
-    model.load_weights(model_keras)
+def _load_model(epoch):
+    model_keras = f'{ROOT_PATH}/cp-000{epoch}-dummy.keras'
+    model = keras.models.load_model(model_keras)
     return model
 
 def upload_to_gcs_and_clean(local_file_path, gcs_bucket_name, gcs_destination_blob_name):
@@ -212,7 +207,7 @@ def main(args):
 
     print('\n\n\nStarting...')
     try:
-        loaded_model = _load_model(OPTICAL_BANDS, OPTICAL_INDICES, DROPOUT, LOSS, METRICS, EPOCH)
+        loaded_model = _load_model(EPOCH)
     except Exception as e:
         print("Failed to load model:", e)
         sys.exit(1)

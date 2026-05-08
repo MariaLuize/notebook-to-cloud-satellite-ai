@@ -9,6 +9,7 @@ README.md
 prediction_complete.py
 create_daily_raster_s2.py
 GRID-ALLCALSSES-COL9.geojson
+model.py
 
 
 # Python
