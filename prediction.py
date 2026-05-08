@@ -170,31 +170,30 @@ def mosaic_predict(mosaic_lzw, region_id, output_path, version, kernel_dim, opti
     finalArray = np.concatenate((finalArray,rowArray),axis=0)
 
     rows,cols = finalArray.shape
-    # driver    = gdal.GetDriverByName("GTiff")
 
-    threshold      = 0.5
-    finalArray     = np.array([finalArray])
-    binary_array   = np.where(finalArray > threshold, 1, 0) 
-    binary_array   = np.array(binary_array.astype(np.float32)) 
+    scaled_array = (finalArray * 255).astype(np.uint8)
+    scaled_array = np.array([scaled_array])
+
     create_directory(output_path)
     raster_uri     = output_path + '/UNET_v'+version+'_grid_'+str(region_id)+'.tif'
     raster_uri_lzw = output_path + '/outimage_v'+version+'_grid_'+str(region_id)+'_'+img_id+'_lzw.tif'
 
-    with rasterio.open(raster_uri,'w',
+    with rasterio.open(raster_uri, 'w',
           driver="GTiff",
           height=rows,
           width=cols,
           count=1,
-          dtype="float32",
-          crs='EPSG:3857',#mixer["projection"]["crs"],
-          transform=ds.transform, #mixer["projection"]["affine"]["doubleMatrix"],
-          nodata="nan") as dataset:
-              dataset.write(binary_array)
+          dtype="uint8",          
+          crs='EPSG:3857',
+          transform=ds.transform) as dataset:
+              dataset.write(scaled_array)
+              
     dataset = gdal.Open(raster_uri, gdal.GA_Update)
     band    = dataset.GetRasterBand(1)
     band.SetScale(mosaic_scale)
     dataset = None
-    subprocess.run(["gdal_translate", "-of", "GTiff", "-co", "COMPRESS=LZW", "-co", "PREDICTOR=2", "-co", "TILED=YES", raster_uri, raster_uri_lzw])
+    
+    subprocess.run(["gdal_translate", "-ot", "Byte", "-of", "GTiff", "-co", "COMPRESS=LZW", "-co", "PREDICTOR=2", "-co", "TILED=YES", raster_uri, raster_uri_lzw])
     os.remove(raster_uri)
     print("C'est finiz\n\n")
 
