@@ -50,7 +50,11 @@ gcloud artifacts repositories create workshop-repo \
 ##  3. Docker Image Generation
 
 We need to package our Keras model, GDAL, and satellite libraries into a portable container.
-Authenticate Docker to GCP
+
+⚠️ CRITICAL STEP: Before building the image, open the prediction.py file in your code editor and change the BUCKET_NAME variable to match the bucket you just created:
+BUCKET_NAME = "[PROJECT_ID]-workshop-data"
+
+### Authenticate Docker to GCP
 
 ```bash
 gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
@@ -82,7 +86,7 @@ If you see the error: `Limit: 0.0 globally (metric: GPUS_ALL_REGIONS)`, it means
 1. In GCP, go to **IAM & Admin > Quotas**.
 2. Search for `GPUS_ALL_REGIONS`.
 3. Click **Edit Quotas**, set the new limit to 1, and provide a justification (e.g., "Educational Workshop for Satellite AI Monitoring").
-4. Wait for the approval email (ussually takes a few minutes to an hour)
+4. Wait for the approval email (usually takes a few minutes to an hour)
 
 ---
 
