@@ -5,7 +5,34 @@ Tired of seeing your computer crash when processing heavy satellite images? In t
 
 ---
 
-## 1. Artifact Registry Setup
+## 1. Instructions for Students (Downloading Assets)
+Before running the cloud command or testing locally, make sure you have the repository and the required data assets ready.
+1. Clone the repository:
+```bash
+git clone <YOUR-GITHUB-REPO-URL>
+cd <YOUR-REPO-FOLDER>
+```
+2. Enable Required Google Cloud APIs
+Before creating any resources, ensure the necessary APIs are enabled in your Google Cloud Project. This command "turns on" the Compute Engine (VMs), Artifact Registry (Docker repo), and Cloud Storage (Buckets).
+
+Run the following command in your Cloud Shell or local terminal:
+
+```bash
+gcloud services enable compute.googleapis.com \
+                       artifactregistry.googleapis.com \
+                       storage.googleapis.com
+```
+
+3. Cloud Storage Bucket Setup
+
+Each student needs a Cloud Storage bucket to store the output results and execution logs. Since bucket names must be globally unique, we will use your Project ID in the name.
+
+```bash
+gcloud storage buckets create gs://[PROJECT_ID]-workshop-data \
+    --location=us-central1
+```
+
+## 2. Artifact Registry Setup
 The first step is to create a home for our Docker images in the cloud.
 
 **Structure of an Image URL:**
@@ -20,7 +47,7 @@ gcloud artifacts repositories create workshop-repo \
     --project=[PROJECT_ID]
 ```
 
-##  2. Docker Image Generation
+##  3. Docker Image Generation
 
 We need to package our Keras model, GDAL, and satellite libraries into a portable container.
 Authenticate Docker to GCP
@@ -49,7 +76,7 @@ docker push us-central1-docker.pkg.dev/[PROJECT_ID]/workshop-repo/workshop-app-i
 ```
 ---
 
-## 3. Handling GPU Quota Issues
+## 4. Handling GPU Quota Issues
 If you see the error: `Limit: 0.0 globally (metric: GPUS_ALL_REGIONS)`, it means your project is locked by default for security.
 
 1. In GCP, go to **IAM & Admin > Quotas**.
@@ -59,7 +86,7 @@ If you see the error: `Limit: 0.0 globally (metric: GPUS_ALL_REGIONS)`, it means
 
 ---
 
-## 4. Deploying the Inference VM
+## 5. Deploying the Inference VM
 We will use a **G2-Standard-8** machine with a modern **NVIDIA L4 GPU**.
 
 ### Check Machine Availability
@@ -99,12 +126,12 @@ gcloud compute instances create workshop-inference-poc-v1 \
       
       # 3. Registry Auth
       gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
-      
+
       # 4. Download Assets (Model and Static Image)
       mkdir -p /opt/workshop/data
-      gsutil cp gs://[PROJECT_ID]/cp-0001-dummy.keras /opt/workshop/data/
-      gsutil cp gs://[PROJECT_ID]/s2_daily_grid_1139_20260113T140711_20260113T141316_T21MWM_48034_lzw.tif /opt/workshop/data/
-      
+      gsutil cp gs://workshop-satellite-data/cp-0001-dummy.keras /opt/workshop/data/
+      gsutil cp gs://workshop-satellite-data/s2_daily_grid_1139_20260113T140711_20260113T141316_T21MWM_48034_lzw.tif /opt/workshop/data/
+
       # 5. Run Container with Volume Injection
       echo "Starting Docker Inference..."
       docker run --gpus all \
@@ -113,29 +140,8 @@ gcloud compute instances create workshop-inference-poc-v1 \
         us-central1-docker.pkg.dev/[PROJECT_ID]/workshop-repo/workshop-app-image:poc-v1
       
       echo "=== [FINISH] Uploading logs and shutting down... ==="
-      gsutil cp /tmp/workshop_log.txt gs://[PROJECT_ID]/logs/log_$(date +%Y%m%d_%H%M%S).txt
-      
+      gsutil cp /tmp/workshop_log.txt gs://[PROJECT_ID]-workshop-data/logs/log_$(date +%Y%m%d_%H%M%S).txt
       # Auto-destruct to avoid unnecessary costs
       shutdown -h now'
 ```
 ---
-
-## 5. Instructions for Students (Downloading Assets)
-Before running the cloud command or testing locally, make sure you have the repository and the required data assets ready.
-1. Clone the repository:
-```bash
-git clone <YOUR-GITHUB-REPO-URL>
-cd <YOUR-REPO-FOLDER>
-```
-2. Download the Dummy Model and Test Image:
-I have provided a dummy model and a static Sentinel-2 image in a public Cloud Storage bucket for you to test the pipeline. Run the following commands in your terminal to download them into your current folder:
-
-```bash
-# Download the Keras Dummy Model
-gsutil cp gs://workshop-satellite-data/cp-0001-dummy.keras .
-
-# Download the Static Sentinel-2 Image
-gsutil cp gs://workshop-satellite-data/s2_daily_grid_1139_20260113T140711_20260113T141316_T21MWM_48034_lzw.tif .
-````
-
-(Note: If you don't have gsutil installed locally, you can run these commands directly inside the Google Cloud Shell).
