@@ -5,7 +5,7 @@ Tired of seeing your computer crash when processing heavy satellite images? In t
 
 ---
 
-## 1. Instructions for Students (Downloading Assets)
+## 1. Initial Setup
 Before running the cloud command or testing locally, make sure you have the repository and the required data assets ready.
 1. Clone the repository:
 ```bash
