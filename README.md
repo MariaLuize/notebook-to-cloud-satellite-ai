@@ -51,8 +51,8 @@ gcloud artifacts repositories create workshop-repo \
 
 We need to package our Keras model, GDAL, and satellite libraries into a portable container.
 
-⚠️ CRITICAL STEP: Before building the image, open the prediction.py file in your code editor and change the BUCKET_NAME variable to match the bucket you just created:
-BUCKET_NAME = "[PROJECT_ID]-workshop-data"
+⚠️ CRITICAL STEP: Before building the image, open the `prediction.py` file in your code editor and change the `BUCKET_NAME` variable to match the bucket you just created:
+`BUCKET_NAME = "[PROJECT_ID]-workshop-data"`
 
 ### Authenticate Docker to GCP
 
