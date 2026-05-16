@@ -144,7 +144,9 @@ gcloud compute instances create workshop-inference-poc-v1 \
         us-central1-docker.pkg.dev/[PROJECT_ID]/workshop-repo/workshop-app-image:poc-v1
       
       echo "=== [FINISH] Uploading logs and shutting down... ==="
+      sync
       gsutil cp /tmp/workshop_log.txt gs://[PROJECT_ID]-workshop-data/logs/log_$(date +%Y%m%d_%H%M%S).txt
+      sleep 5
       # Auto-destruct to avoid unnecessary costs
       shutdown -h now'
 ```
